@@ -33,11 +33,9 @@ class review_request:
 
         if age > timedelta(days=30):
             severity = " style=\"color: #B20000;\""
-        elif age > timedelta(days=10):
-            severity = " style=\"color: #E6B800;\""
 
         rr_id_link = "https://reviews.apache.org/r/" + str(self.rr_id)
-        return "<tr><td %s>%s</td><td><a href=\"%s\">%s</a></td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>" % (severity, age, rr_id_link, self.rr_id, self.summary, self.submitter, self.target, self.open_issues, self.shipits)
+        return "<tr><td%s>%s</td><td><a href=\"%s\">%s</a></td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>" % (severity, age, rr_id_link, self.rr_id, self.summary, self.submitter, self.target, self.open_issues, self.shipits)
 
 # Example rows:
 #  <tr class="danger">
