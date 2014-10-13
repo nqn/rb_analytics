@@ -32,7 +32,7 @@ def main():
     msg.attach(part2)
 
     s = smtplib.SMTP('localhost')
-    s.sendmail(me, you, msg.as_string())
+    s.sendmail(sys.argv[1], sys.argv[2], msg.as_string())
     s.quit()
 
 if __name__ == "__main__":
