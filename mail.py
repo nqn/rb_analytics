@@ -6,14 +6,14 @@ def parse_developer_file(filename):
     core_developers = []
     f = open(filename)
     for line in f:
-        core_developers.append(line[:-1]) 
+        core_developers.append(line[:-1])
     f.close()
     return core_developers
 
 class review_request:
     def __init__(self, row):
         def parse_timestamp(s):
-            return datetime.strptime(s, "%Y-%m-%dT%H:%M:%SZ") 
+            return datetime.strptime(s, "%Y-%m-%dT%H:%M:%SZ")
 
         self.rr_id = row[0]
         self.summary = row[2]
@@ -26,15 +26,18 @@ class review_request:
     def html_row(self):
         age = datetime.now() - self.added
         severity = ""
-  
-        if age > timedelta(days=30):
-            severity = " class=\"danger\""
-        elif age > timedelta(days=10):
-            severity = " class=\"warning\""
-        else:
-            severity = " class=\"success\""
 
-        return "<tr %s><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>" % (severity, age, self.rr_id, self.summary, self.submitter, self.target, self.open_issues, self.shipits)
+        # Filter out young reviews
+        if age < timedelta(days=10):
+            return ""
+
+        if age > timedelta(days=30):
+            severity = " style=\"color: #B20000;\""
+        elif age > timedelta(days=10):
+            severity = " style=\"color: #E6B800;\""
+
+        rr_id_link = "https://reviews.apache.org/r/" + str(self.rr_id)
+        return "<tr><td %s>%s</td><td><a href=\"%s\">%s</a></td><td>%s</td><td>%s</td><td>%s</td><td>%s</td><td>%s</td></tr>" % (severity, age, rr_id_link, self.rr_id, self.summary, self.submitter, self.target, self.open_issues, self.shipits)
 
 # Example rows:
 #  <tr class="danger">
@@ -57,12 +60,6 @@ class review_request:
 
 def html_header():
     return """\
-<html>
-<head>
-<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
-<div class="container">
 <h1>Core Reviews</h1>
 <table class="table table-striped">
   <thead>
@@ -79,9 +76,6 @@ def html_header():
 def html_footer():
     return """\
 </table>
-</div>
-</body>
-</html>
 """
 
 def main():
@@ -91,7 +85,7 @@ def main():
 
     try:
         con = lite.connect('reviews.db')
-        cur = con.cursor() 
+        cur = con.cursor()
 
         #
         # Construct OR clauses to get RR's for developer list.
@@ -120,13 +114,13 @@ def main():
     except lite.Error, e:
         if con:
             con.rollback()
-        
+
         print "Error %s:" % e.args[0]
         sys.exit(1)
-        
+
     finally:
         if con:
-            con.close() 
+            con.close()
 
 if __name__ == "__main__":
     main()
