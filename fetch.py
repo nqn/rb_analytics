@@ -55,34 +55,35 @@ def fetch_rrs(cur, status):
         parsed += chunk_size
         chunk = fetch_rrs_chunk(parsed - 1, chunk_size, status)
         add_rrs(cur, chunk)
-    
+
 
 def main():
 
     try:
         con = lite.connect('reviews.db')
-        cur = con.cursor() 
+        cur = con.cursor()
 
         cur.execute("DROP TABLE IF EXISTS ReviewRequests")
         cur.execute("CREATE TABLE ReviewRequests(Id INTEGER PRIMARY KEY, Status INTEGER, Summary TEXT, Submitter TEXT, TargetPeople TEXT, DependsOn TEXT, OpenIssues INTEGER, ShipIts INTEGER, Added TEXT, LastUpdated TEXT)")
 
         fetch_rrs(cur, pending_str)
-        fetch_rrs(cur, submitted_str)
-        
+        # Disabling submitted reviews for now.
+        # fetch_rrs(cur, submitted_str)
+
         con.commit()
 
     except lite.Error, e:
-        
+
         if con:
             con.rollback()
-        
+
         print "Error %s:" % e.args[0]
         sys.exit(1)
-        
+
     finally:
-        
+
         if con:
-            con.close() 
+            con.close()
 
 if __name__ == "__main__":
     main()
