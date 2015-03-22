@@ -58,7 +58,6 @@ def fetch_rrs(cur, status):
 
 
 def main():
-
     try:
         con = lite.connect('reviews.db')
         cur = con.cursor()
@@ -67,8 +66,10 @@ def main():
         cur.execute("CREATE TABLE ReviewRequests(Id INTEGER PRIMARY KEY, Status INTEGER, Summary TEXT, Submitter TEXT, TargetPeople TEXT, DependsOn TEXT, OpenIssues INTEGER, ShipIts INTEGER, Added TEXT, LastUpdated TEXT)")
 
         fetch_rrs(cur, pending_str)
-        # Disabling submitted reviews for now.
-        # fetch_rrs(cur, submitted_str)
+
+        if len(sys.argv) > 1 and sys.argv[1] == "full":
+            print "Fetching submitted reviews"
+            fetch_rrs(cur, submitted_str)
 
         con.commit()
 
@@ -81,7 +82,6 @@ def main():
         sys.exit(1)
 
     finally:
-
         if con:
             con.close()
 

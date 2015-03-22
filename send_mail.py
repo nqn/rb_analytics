@@ -8,18 +8,18 @@ from email.mime.text import MIMEText
 
 
 def main():
-    if len(sys.argv) < 3:
-      print "Usage: %s <from email> <to email>", sys.argv[0]
+    if len(sys.argv) < 4:
+      print "Usage: %s <input> <from email> <to email>", sys.argv[0]
       sys.exit(1)
 
-    f = open('mail.html', 'r')
+    f = open(sys.argv[1], 'r')
     content = f.read()
     f.close()
 
     msg = MIMEMultipart('alternative')
     msg['Subject'] = "Weekly Review Metrics"
-    msg['From'] = sys.argv[1]
-    msg['To'] = sys.argv[2]
+    msg['From'] = sys.argv[2]
+    msg['To'] = sys.argv[3]
 
     text = "The weekly log does not support plain-text (yet)."
     # Hang off mail.html as attachment.

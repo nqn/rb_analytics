@@ -79,7 +79,7 @@ def html_footer():
 def main():
     core_developers = parse_developer_file('core.txt')
 
-    f = open('mail.html', 'w')
+    f = open('mail_rrs.html', 'w')
 
     try:
         con = lite.connect('reviews.db')
