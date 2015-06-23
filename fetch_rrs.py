@@ -10,6 +10,9 @@ pending_int = 0
 submitted_str = "submitted"
 submitted_int = 1
 
+discarded_str = "discarded"
+discarded_int = 2
+
 def fetch_rrs_chunk(start, chunk_size, status):
     # TODO(nnielsen): Get submitted review requests too.
     rb_url = 'https://reviews.apache.org/api/review-requests/?to-groups=mesos&status=%s&max-results=%d&start=%d' % (status, chunk_size, start)
@@ -37,8 +40,12 @@ def add_rrs(cur, rrs):
         rr_status = 0
         if rr["status"] == pending_str:
             rr_status = pending_int
-        if rr["status"] == submitted_str:
+        elif rr["status"] == submitted_str:
             rr_status = submitted_int
+        elif rr["status"] == discarded_str:
+            rr_status = discarded_int
+        else:
+            print "Warning: didn't encode state: '%s' correctly" % rr["status"]
 
         cur.execute("INSERT INTO ReviewRequests(Id, Submitter, TargetPeople, Added, OpenIssues, Summary, ShipIts, Status, LastUpdated) VALUES (?,?,?,?,?,?,?,?,?)" , (rr_id, rr_submitter, rr_target, rr_added, rr_open_issues, rr_summary, rr_shipits, rr_status, rr_last_updated))
 
@@ -65,11 +72,11 @@ def main():
         cur.execute("DROP TABLE IF EXISTS ReviewRequests")
         cur.execute("CREATE TABLE ReviewRequests(Id INTEGER PRIMARY KEY, Status INTEGER, Summary TEXT, Submitter TEXT, TargetPeople TEXT, DependsOn TEXT, OpenIssues INTEGER, ShipIts INTEGER, Added TEXT, LastUpdated TEXT)")
 
-        fetch_rrs(cur, pending_str)
-
         if len(sys.argv) > 1 and sys.argv[1] == "full":
             print "Fetching submitted reviews"
-            fetch_rrs(cur, submitted_str)
+            fetch_rrs(cur, 'all')
+        else:
+            fetch_rrs(cur, pending_str)
 
         con.commit()
 
