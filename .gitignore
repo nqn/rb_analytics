@@ -1,0 +1,15 @@
+# Default Python gitignore
+*.pyc
+build/
+out/
+
+# Recommended build directory.
+/build/
+
+# PyCharm configuration
+.idea/
+
+# Private files, not to be submitted to github
+core.txt
+groups.txt
+

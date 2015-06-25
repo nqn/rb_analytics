@@ -1,0 +1,5 @@
+# Requirements for RB Analytics Project
+
+mandrill
+requests
+jinja2
