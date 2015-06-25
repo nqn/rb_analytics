@@ -1,5 +1,7 @@
 # Requirements for RB Analytics Project
 
-mandrill
-requests
 jinja2
+mandrill
+nose
+pymongo
+requests
