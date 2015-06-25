@@ -2,4 +2,5 @@
 #
 # Bash wrapper for the mailer package
 
-mailer/send.py $@
+mailer/send.py "$@"
+
