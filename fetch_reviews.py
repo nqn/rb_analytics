@@ -5,12 +5,15 @@ import sqlite3 as lite
 
 
 # TODO(nnielsen): Centralize these constants.
+# TODO(marco): actually, globals are evil - remove
 pending_str = "pending"
 pending_int = 0
 
 submitted_str = "submitted"
 submitted_int = 1
 
+# TODO(marco): figure out how to enable Token Auth
+# It does not seem possible to generate API tokens from Apache RB account - investigate.
 
 def fetch_reviews(review_id):
     rb_url = 'https://reviews.apache.org/api/review-requests/%d/reviews/' % (review_id)
