@@ -1,7 +1,7 @@
 import logging
 import re
 
-from base_db import MongoDB
+import base_db
 
 __author__ = 'marco'
 
@@ -12,7 +12,7 @@ SUBMITTER_REGEX = re.compile(r'https://reviews.apache.org/api/users/(\w+)/')
 RR_ID_REGEX = re.compile(r'https://reviews.apache.org/api/review-requests/(\d+)/')
 
 
-class Reviews(MongoDB):
+class Reviews(base_db.MongoDB):
 
     FIELDS_TO_REMOVE = ['links',
                         'target_groups',
@@ -46,6 +46,7 @@ class Reviews(MongoDB):
     def _replace_submitter(review):
         if 'submitter' in review.get('links'):
             sub = review['links']['submitter']['href']
+            # TODO(marco): should we just use the 'title' field?
             m = re.match(SUBMITTER_REGEX, sub)
             if m and m.groups() > 0:
                 review['submitter'] = m.group(1)
@@ -67,11 +68,11 @@ class Reviews(MongoDB):
         for depends in review.get('depends_on', None):
             m = re.match(RR_ID_REGEX, depends.get('href'))
             if m:
-                depends_on.append(m.group(1))
+                depends_on.append(int(m.group(1)))
         for blocks in review.get('blocks', None):
             m = re.match(RR_ID_REGEX, blocks.get('href'))
             if m:
-                blocked_by.append(m.group(1))
+                blocked_by.append(int(m.group(1)))
         review['dependencies'] = {
             'depends_on': depends_on,
             'blocked_by': blocked_by
@@ -90,7 +91,10 @@ class Reviews(MongoDB):
     def get(self, review_id):
         with self.context(REVIEWS_COLLECTION) as rrs:
             result = rrs.find_one(review_id)
+        if result:
             return result
+        else:
+            raise base_db.DBNoRecordFound("Could not find Review #{}".format(review_id))
 
     def get_all_ids(self):
         """ Retrieves all RRs currently in DB and returns the IDs

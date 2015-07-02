@@ -1,7 +1,3 @@
-#!/usr/bin/env python
-#
-# @copyright: AlertAvert.com (c) 2015. All rights reserved.
-#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -14,34 +10,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-"""
-========
-Overview
-========
-
-TODO: enter overview here
-
-configuration
--------------
-
-TODO: enter a description of the command-line arguments
-
-usage
------
-
-TODO: describe script usage here
-
-"""
 import requests
+
+from datastore.reviews_db import Reviews
 
 __author__ = 'Marco Massenzio'
 __email__ = 'marco@mesosphere.io'
 
-import argparse
-import logging
-import os
-
-from datastore.reviews_db import Reviews
 
 LOG_FORMAT = '%(asctime)s [%(levelname)-5s] %(message)s'
 

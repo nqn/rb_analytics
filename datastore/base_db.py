@@ -1,5 +1,3 @@
-# Copyright AlertAvert.com (c) 2013. All rights reserved.
-#
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
 # You may obtain a copy of the License at
@@ -156,4 +154,15 @@ class MongoDB(object):
             self._log.warn('Dropping Collection %s', collection_name)
             self.db.drop_collection(collection_name)
         except pymongo.errors.PyMongoError, ex:
-            self._log.error('Could not drop collection {}. Reason was: {}'.format(collection_name, ex.message))
+            self._log.error('Could not drop collection {}. Reason was: {}'.format(
+                collection_name, ex.message))
+
+    @abc.abstractmethod
+    def drop(self):
+        """ Drops the collection that is managed by the concrete class.
+
+            Every collection class must implement this method by calling
+            `MongoDb.drop_collection(collection_name)` where `collection_name` is the name of the
+            managed collection
+        """
+        pass
